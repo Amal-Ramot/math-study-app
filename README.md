@@ -8,7 +8,7 @@
 
 ## הורדה והתקנה
 
-1. נכנסים לעמוד **Releases** של המאגר ב-GitHub (בצד ימין של עמוד המאגר, או בכתובת `.../releases`).
+1. נכנסים לעמוד ההורדות: **https://github.com/Amal-Ramot/math-study-app/releases/latest**
 2. בוחרים את הגרסה האחרונה ומורידים את הקובץ שמתאים למחשב:
 
 | מערכת | קובץ | איך מתקינים |
@@ -29,16 +29,14 @@
 ## יצירת גרסה חדשה (Release)
 
 1. מעדכנים את `app/index.html` (ואם רוצים, את `"version"` ב-`package.json`).
-2. שומרים ב-git ודוחפים:
+2. שומרים ב-git ודוחפים ל-`main`:
 
 ```bash
 git add -A && git commit -m "עדכון"
 git push
-git tag v1.0.0
-git push origin v1.0.0
 ```
 
-הדחיפה של תג שמתחיל ב-`v` מפעילה את ה-workflow ‏`.github/workflows/release.yml`. הוא בונה מתקינים ל-Windows, ל-Mac ול-Linux ויוצר Release חדש עם כל הקבצים. לגרסה הבאה משתמשים בתג חדש (`v1.0.1` וכן הלאה). אפשר גם להריץ את ה-workflow ידנית מלשונית **Actions** (Run workflow). הרצה ידנית בונה את הקבצים ומצרפת אותם להרצה (Artifacts), אבל לא יוצרת Release.
+כל דחיפה ל-`main` מפעילה את ה-workflow ‏`.github/workflows/release.yml`. הוא בונה מתקינים ל-Windows, ל-Mac ול-Linux ויוצר Release חדש (`v1.0.<מספר הרצה>`) שמסומן כגרסה האחרונה, כך שהקישור `releases/latest` תמיד מוביל לגרסה העדכנית. אפשר גם לדחוף תג משלכם (`git tag v2.0.0 && git push origin v2.0.0`) או להריץ ידנית מלשונית **Actions**.
 
 ## הרצה מקומית (למפתחים)
 
@@ -64,5 +62,5 @@ npm run icon         # יוצר מחדש את build/icon.png (דורש Playwrigh
   - *Linux:* `chmod +x Math-Study-*.AppImage && ./Math-Study-*.AppImage`.
 - **No install needed:** `app/index.html` also works when opened directly in any modern browser. Progress is kept in localStorage.
 - **Offline:** CI runs `npm run vendor`, which downloads React 18.3.1, ReactDOM 18.3.1 and htm 3.1.1 UMD builds into `app/vendor/` and rewrites the `<script src>` tags. If that step fails, the CDN URLs are kept. Fonts come from Google Fonts and fall back to system fonts when offline.
-- **Release:** `git tag v1.0.0 && git push origin v1.0.0`. GitHub Actions builds Windows (NSIS), macOS (DMG, universal, unsigned) and Linux (AppImage) installers and attaches them to a GitHub Release.
+- **Release:** every push to `main` (or a `v*` tag) makes GitHub Actions build Windows (NSIS), macOS (DMG, universal, unsigned) and Linux (AppImage) installers and attaches them to a GitHub Release.
 - **Local dev:** `npm install`, `npm start`. Build with `npm run dist` (output in `dist/`).
