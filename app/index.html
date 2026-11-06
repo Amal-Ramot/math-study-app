@@ -350,20 +350,20 @@ function angType(d){ if(Math.abs(d-90)<0.6) return 'right'; if(d<90) return 'acu
         const choices = uniq(correct, nums.slice(1, 4).map(heb), 4);
         return {
           skill: 'ממספר למילים', type: 'choice', layout: 'wide',
-          prompt: 'בחרי איך כותבים את המספר במילים:',
+          prompt: 'בחרו איך כותבים את המספר במילים:',
           visual: BIG(String(n)),
           choices, answer: correct, answerText: correct,
-          hint: 'פרקי את המספר למאות, עשרות ויחידות, וקראי כל חלק.',
+          hint: 'פרקו את המספר למאות, עשרות ויחידות, וקראו כל חלק.',
           explain
         };
       }
       if (kind === 2) {
         return {
           skill: 'ממילים למספר', type: 'input',
-          prompt: 'כתבי את המספר בספרות:',
+          prompt: 'כתבו את המספר בספרות:',
           visual: W(heb(n)),
           answer: n, answerText: String(n),
-          hint: 'כמה מאות יש? כמה עשרות? כמה יחידות? אם חסר חלק — כתבי 0 במקומו.',
+          hint: 'כמה מאות יש? כמה עשרות? כמה יחידות? אם חסר חלק — כתבו 0 במקומו.',
           explain
         };
       }
@@ -438,8 +438,8 @@ function angType(d){ if(Math.abs(d-90)<0.6) return 'right'; if(d<90) return 'acu
           skill: 'מספר עוקב',
           prompt: `מהו המספר העוקב של <b>${n}</b>?`,
           answerText: String(a),
-          hint: 'העוקב בא מיד אחרי — הוסיפי 1.',
-          explain: `<p>העוקב גדול ב־1:</p>${BIG(`${n} + 1 = ${a}`)}${a % 10 === 0 ? '<p>שימי לב: 9 ועוד 1 זה 10, אז עוברים לעשרת הבאה' + (a % 100 === 0 ? ' — וכאן גם למאה הבאה!' : '.') + '</p>' : ''}`
+          hint: 'העוקב בא מיד אחרי — הוסיפו 1.',
+          explain: `<p>העוקב גדול ב־1:</p>${BIG(`${n} + 1 = ${a}`)}${a % 10 === 0 ? '<p>שימו לב: 9 ועוד 1 זה 10, אז עוברים לעשרת הבאה' + (a % 100 === 0 ? ' — וכאן גם למאה הבאה!' : '.') + '</p>' : ''}`
         };
         if (asChoice) {
           const choices = numChoices(a, [n - 1, n + 10, n + 2, a % 100 === 0 ? a - 100 : (a % 10 === 0 ? a - 10 : a + 100)].filter(x => x >= 0 && x !== a), 4);
@@ -455,8 +455,8 @@ function angType(d){ if(Math.abs(d-90)<0.6) return 'right'; if(d<90) return 'acu
           skill: 'מספר קודם', type: 'input',
           prompt: `מהו המספר הקודם של <b>${n}</b>?`,
           answer: a, answerText: String(a),
-          hint: 'הקודם בא מיד לפני — הורידי 1.',
-          explain: `<p>הקודם קטן ב־1:</p>${BIG(`${n} ${MINUS} 1 = ${a}`)}${n % 10 === 0 ? '<p>שימי לב: לפני 0 ביחידות בא 9, והעשרות קטנות באחת.</p>' : ''}`
+          hint: 'הקודם בא מיד לפני — הורידו 1.',
+          explain: `<p>הקודם קטן ב־1:</p>${BIG(`${n} ${MINUS} 1 = ${a}`)}${n % 10 === 0 ? '<p>שימו לב: לפני 0 ביחידות בא 9, והעשרות קטנות באחת.</p>' : ''}`
         };
       }
       if (kind === 5) {
@@ -489,7 +489,7 @@ function angType(d){ if(Math.abs(d-90)<0.6) return 'right'; if(d<90) return 'acu
             skill: 'זוגי ואי־זוגי', type: 'choice',
             prompt: `האם המספר <b>${n}</b> זוגי או אי־זוגי?`,
             choices: ['זוגי', 'אי־זוגי'], answer: a, answerText: a,
-            hint: 'הסתכלי רק על ספרת היחידות.',
+            hint: 'הסתכלו רק על ספרת היחידות.',
             explain: parityExplain(n)
           };
         }
@@ -501,9 +501,9 @@ function angType(d){ if(Math.abs(d-90)<0.6) return 'right'; if(d<90) return 'acu
         const w = wantOdd ? 'האי־זוגי' : 'הזוגי';
         return {
           skill: 'זוגי ואי־זוגי', type: 'choice', ltr: true,
-          prompt: `בחרי את המספר ${w}:`,
+          prompt: `בחרו את המספר ${w}:`,
           choices: shuffle([a, ...others]), answer: a, answerText: String(a),
-          hint: 'הסתכלי רק על ספרת היחידות של כל מספר.',
+          hint: 'הסתכלו רק על ספרת היחידות של כל מספר.',
           explain: `<p>בודקים את ספרת היחידות של כל מספר:</p><ul>${[a, ...others].map(x => `<li>${x} — ${x % 10} — ${isEven(x) ? 'זוגי' : 'אי־זוגי'}</li>`).join('')}</ul><p>התשובה: <b>${a}</b></p>`
         };
       }
@@ -516,7 +516,7 @@ function angType(d){ if(Math.abs(d-90)<0.6) return 'right'; if(d<90) return 'acu
         const nm = two ? 'הדו־ספרתי' : 'התלת־ספרתי';
         return {
           skill: 'דו־ספרתי ותלת־ספרתי', type: 'choice', ltr: true,
-          prompt: `בחרי את המספר ${nm}:`,
+          prompt: `בחרו את המספר ${nm}:`,
           choices: shuffle([n1, n2, n3, n4]), answer: a, answerText: String(a),
           hint: two ? 'דו־ספרתי = יש לו 2 ספרות.' : 'תלת־ספרתי = יש לו 3 ספרות.',
           explain: `<p>סופרים כמה ספרות יש בכל מספר:</p><ul><li>${n1} — ספרה אחת (חד־ספרתי)</li><li>${n2} — 2 ספרות (דו־ספרתי)</li><li>${n3} — 3 ספרות (תלת־ספרתי)</li><li>${n4} — 4 ספרות (ארבע־ספרתי)</li></ul><p>התשובה: <b>${a}</b></p>`
@@ -610,10 +610,10 @@ ${placeTable(527)}
         const missing = [].concat(t === 0 ? ['אין עשרות — כותבים 0 במקום העשרות.'] : [], u === 0 ? ['אין יחידות — כותבים 0 במקום היחידות.'] : []);
         return {
           skill: 'מאות, עשרות ויחידות', type: 'input',
-          prompt: 'כתבי את המספר בספרות:',
+          prompt: 'כתבו את המספר בספרות:',
           visual: W(joinVe(sh)),
           answer: a, answerText: String(a),
-          hint: 'שימי לב לסדר: קודם מאות, אחר כך עשרות, ובסוף יחידות. אם חסר משהו — 0.',
+          hint: 'שימו לב לסדר: קודם מאות, אחר כך עשרות, ובסוף יחידות. אם חסר משהו — 0.',
           explain: `<p>מסדרים לפי המקומות:</p>${placeTable(a)}${missing.map(m => `<p>${m}</p>`).join('')}<p>המספר: <b>${a}</b></p>`
         };
       }
@@ -659,10 +659,10 @@ ${placeTable(527)}
           const shown = parts.map((p, i) => i === miss ? BL : p).join(' + ');
           return {
             skill: 'פירוק מספר', type: 'input',
-            prompt: 'השלימי את המספר החסר:',
+            prompt: 'השלימו את המספר החסר:',
             visual: BIG(`${n} = ${shown}`),
             answer: a, answerText: String(a),
-            hint: 'פרקי את המספר למאות, עשרות ויחידות.',
+            hint: 'פרקו את המספר למאות, עשרות ויחידות.',
             explain: `<p>${n} = ${breakdown(n)}</p>${BIG(`${n} = ${parts.join(' + ')}`)}<p>החסר: <b>${a}</b></p>`
           };
         }
@@ -673,7 +673,7 @@ ${placeTable(527)}
           prompt: 'איזה מספר זה?',
           visual: BIG(`${shownParts.join(' + ')} = ${BL}`),
           answer: n, answerText: String(n),
-          hint: 'מצאי מי המאות, מי העשרות ומי היחידות.',
+          hint: 'מצאו מי המאות, מי העשרות ומי היחידות.',
           explain: `<p>${h * 100} — ${HW(h)}, ${t * 10} — ${TW(t)}, ${u} — ${UW(u)}.</p>${placeTable(n)}<p>המספר: <b>${n}</b></p>`
         };
       }
@@ -690,9 +690,9 @@ ${placeTable(527)}
       const a = arr[0] * 100 + arr[1] * 10 + arr[2];
       return {
         skill: 'מספר גדול/קטן מספרות', type: 'input',
-        prompt: `מהספרות <b>${ds.join(', ')}</b> בני את המספר התלת־ספרתי ה${big ? 'גדול' : 'קטן'} ביותר. (כל ספרה פעם אחת בדיוק)`,
+        prompt: `מהספרות <b>${ds.join(', ')}</b> בנו את המספר התלת־ספרתי ה${big ? 'גדול' : 'קטן'} ביותר. (כל ספרה פעם אחת בדיוק)`,
         answer: a, answerText: String(a),
-        hint: big ? 'שימי את הספרה הגדולה ביותר במקום המאות.' : (withZero ? 'מספר תלת־ספרתי לא יכול להתחיל ב־0!' : 'שימי את הספרה הקטנה ביותר במקום המאות.'),
+        hint: big ? 'שימו את הספרה הגדולה ביותר במקום המאות.' : (withZero ? 'מספר תלת־ספרתי לא יכול להתחיל ב־0!' : 'שימו את הספרה הקטנה ביותר במקום המאות.'),
         explain: big
           ? `<p>כדי לקבל מספר גדול, שמים את הספרות מהגדולה לקטנה: ${desc.join(', ')}.</p><p>המספר: <b>${a}</b></p>`
           : (withZero
@@ -760,10 +760,10 @@ ${placeTable(527)}
         const a = terms[miss];
         return {
           skill: 'השלמת מספר חסר', type: 'input',
-          prompt: 'מצאי את המספר החסר בסדרה:',
+          prompt: 'מצאו את המספר החסר בסדרה:',
           visual: chipRow(terms, miss),
           answer: a, answerText: String(a),
-          hint: 'מצאי קודם את החוק — בכמה גדל או קטן כל מספר?',
+          hint: 'מצאו קודם את החוק — בכמה גדל או קטן כל מספר?',
           explain: seqExplain(terms, step) + `<p>המספר החסר: <b>${a}</b></p>`
         };
       }
@@ -774,7 +774,7 @@ ${placeTable(527)}
           prompt: 'מהו המספר הבא בסדרה?',
           visual: chipRow(terms, 5),
           answer: a, answerText: String(a),
-          hint: 'מצאי את החוק והמשיכי אותו צעד אחד.',
+          hint: 'מצאו את החוק והמשיכו אותו צעד אחד.',
           explain: seqExplain(terms, step) + `<p>המספר הבא: <b>${a}</b></p>`
         };
       }
@@ -962,12 +962,12 @@ ${placeTable(527)}
     return {
       skill: 'השוואת תרגילים',
       type: 'choice', ltr: true,
-      prompt: 'פתרי כל צד, ובחרי איזה סימן מתאים בעיגול.',
+      prompt: 'פתרו כל צד, ובחרו איזה סימן מתאים בעיגול.',
       visual: BIG(`${L.s} ${CIRC} ${Rt.s}`),
       choices: cmpChoices,
       answer: ans,
       answerText: `${L.s} ${SYM[ans].replace('&lt;', '<').replace('&gt;', '>')} ${Rt.s}`,
-      hint: 'קודם חשבי כמה יוצא בכל צד, ורק אחר כך השווי.',
+      hint: 'קודם חשבו כמה יוצא בכל צד, ורק אחר כך השוו.',
       explain: lines.join('')
     };
   }
@@ -1001,7 +1001,7 @@ ${placeTable(527)}
       choices,
       answer: correct,
       answerText: String(correct),
-      hint: `קודם מצאי איזה מספר נותן בדיוק ${t}. אחר כך חשבי: צריך יותר ממנו או פחות?`,
+      hint: `קודם מצאו איזה מספר נותן בדיוק ${t}. אחר כך חשבו: צריך יותר ממנו או פחות?`,
       explain: `<p>קודם מוצאים את המספר שנותן בדיוק ${t}: ${M(`${expr(bnd)} = ${t}`)}</p>
         <p>אבל ${bnd} לא מתאים! עם ${bnd} יוצא בדיוק ${t} — זה <b>שווה</b> ל־${t}, ואנחנו צריכים ${word}${t}.</p>
         <p>לכן צריך מספר ${rel === 'gt' ? 'גדול' : 'קטן'} מ־${bnd}: ${M(`${expr(correct)} = ${val(correct)}`)}, ו־${M(`${val(correct)} ${s} ${t}`)} ✔</p>`
@@ -1104,7 +1104,7 @@ ${placeTable(527)}
     const i = cfg.labels[0], j = cfg.labels[cfg.labels.length - 1];
     const vi = cfg.val(i), vj = cfg.val(j), k = j - i;
     if (k === 1) return `<p>בין ${vi} ל־${vj} יש קפיצה אחת בלבד, ולכן כל קפיצה היא ${M(`${vj} ${MINUS} ${vi} = ${cfg.s}`)}.</p>`;
-    return `<p>מ־${vi} עד ${vj} יש ${k} קפיצות שוות (ספרי את הרווחים בין השנתות).</p>
+    return `<p>מ־${vi} עד ${vj} יש ${k} קפיצות שוות (ספרו את הרווחים בין השנתות).</p>
       <p>המרחק כולו: ${M(`${vj} ${MINUS} ${vi} = ${vj - vi}`)}, ומחלקים ל־${k} קפיצות: ${M(`${vj - vi} : ${k} = ${cfg.s}`)}.</p>`;
   }
 
@@ -1121,7 +1121,7 @@ ${placeTable(527)}
       visual: svgWrap(lineSVG(cfg, t)),
       answer: v,
       answerText: String(v),
-      hint: 'קודם מצאי בכמה גדל המספר בכל קפיצה בין שתי שנתות, ואחר כך ספרי קפיצות.',
+      hint: 'קודם מצאו בכמה גדל המספר בכל קפיצה בין שתי שנתות, ואחר כך ספרו קפיצות.',
       explain: stepText(cfg) + countText(cfg, t)
     };
   }
@@ -1138,7 +1138,7 @@ ${placeTable(527)}
       choices: uniq(s, cands, 4),
       answer: s,
       answerText: String(s),
-      hint: 'ספרי כמה קפיצות (רווחים) יש בין שני המספרים הכתובים.',
+      hint: 'ספרו כמה קפיצות (רווחים) יש בין שני המספרים הכתובים.',
       explain: stepText(cfg)
     };
   }
@@ -1152,9 +1152,9 @@ ${placeTable(527)}
     return {
       skill: 'סימון מספר על הישר',
       type: 'custom',
-      prompt: `סמני על ישר המספרים את המספר ${target}. לחצי על השנתה המתאימה.`,
+      prompt: `סמנו על ישר המספרים את המספר ${target}. לחצו על השנתה המתאימה.`,
       answerText: String(target),
-      hint: 'מצאי קודם בכמה גדל המספר בכל קפיצה, ואז ספרי קפיצות מהמספר הקרוב.',
+      hint: 'מצאו קודם בכמה גדל המספר בכל קפיצה, ואז ספרו קפיצות מהמספר הקרוב.',
       explain: stepText(cfg) + countText(cfg, t),
       mount(el) {
         const NS = 'http://www.w3.org/2000/svg';
@@ -1232,7 +1232,7 @@ ${placeTable(527)}
               marks.appendChild(mkMarker(t, 'f-ok', target));
             }
           },
-          describe: (v) => (v == null ? 'לא סימנה' : `סימנה את ${v}`)
+          describe: (v) => (v == null ? 'לא סומן' : `סומן: ${v}`)
         };
       },
       check: (v) => v === target
@@ -1407,13 +1407,13 @@ ${placeTable(527)}
     return {
       skill,
       type: 'input',
-      prompt: vertical ? 'פתרי את התרגיל במאונך וכתבי את התוצאה.' : 'פתרי את התרגיל.',
+      prompt: vertical ? 'פתרו את התרגיל במאונך וכתבו את התוצאה.' : 'פתרו את התרגיל.',
       visual: vertical ? vertHTML(a, b, op, res) : BIG(`${a} ${op} ${b} = ${BL}`),
       answer: res,
       answerText: String(res),
       hint: op === '+'
-        ? 'התחילי מהיחידות. אם יוצא 10 או יותר — כותבים רק את היחידות ומעבירים 1 לעמודה הבאה.'
-        : 'התחילי מהיחידות. אם הספרה למעלה קטנה מהספרה למטה — פורטים מהעמודה שמשמאל.',
+        ? 'התחילו מהיחידות. אם יוצא 10 או יותר — כותבים רק את היחידות ומעבירים 1 לעמודה הבאה.'
+        : 'התחילו מהיחידות. אם הספרה למעלה קטנה מהספרה למטה — פורטים מהעמודה שמשמאל.',
       explain: pre + explain
     };
   }
@@ -1500,7 +1500,7 @@ ${placeTable(527)}
       visual: BIG(`${c} : ${a} = ${BL}`),
       answer: b,
       answerText: String(b),
-      hint: `חפשי בלוח הכפל: ${M(`${a} × ${BL} = ${c}`)}`,
+      hint: `חפשו בלוח הכפל: ${M(`${a} × ${BL} = ${c}`)}`,
       explain
     };
   }
@@ -1551,7 +1551,7 @@ ${placeTable(527)}
     'חיסור': 'כשמשהו יורד, נלקח, נאכל, או כששואלים "בכמה יותר" — מחסרים.',
     'כפל': 'כשיש כמה קבוצות שוות ושואלים כמה יש בסך הכול — כופלים.',
     'חילוק': 'כשמחלקים שווה בשווה, או שואלים כמה קבוצות אפשר ליצור — מחלקים.',
-    'שני שלבים': 'יש כאן שני שלבים. מה קורה קודם? פתרי שלב אחרי שלב.'
+    'שני שלבים': 'יש כאן שני שלבים. מה קורה קודם? פתרו שלב אחרי שלב.'
   };
 
   const WT = {
@@ -1613,11 +1613,11 @@ ${placeTable(527)}
       () => { const a = R(10, 30), b = R(4, 15), c = R(3, a + b - 2);
         return { q: `באוטובוס היו ${a} נוסעים. בתחנה הראשונה עלו ${b} נוסעים, ובתחנה השנייה ירדו ${c} נוסעים. כמה נוסעים יש עכשיו באוטובוס?`, ex: [`${a} + ${b} = ${a + b}`, `${a + b} ${SUB} ${c} = ${a + b - c}`], ans: a + b - c, unit: 'נוסעים' }; },
       () => { const p = person(), k = R(2, 5), pr = R(3, 9), pay = P([50, 100]);
-        return { q: `${p.n} ${g(p, 'קנה', 'קנתה')} ${k} מחברות. כל מחברת עולה ${pr} שקלים. ${g(p, 'הוא שילם', 'היא שילמה')} בשטר של ${pay} שקלים. כמה עודף ${g(p, 'הוא קיבל', 'היא קיבלה')}?`, ex: [`${k} × ${pr} = ${k * pr}`, `${pay} ${SUB} ${k * pr} = ${pay - k * pr}`], ans: pay - k * pr, unit: 'שקלים', hint: 'קודם חשבי כמה עלו כל המחברות, ואחר כך כמה נשאר מהשטר.' }; },
+        return { q: `${p.n} ${g(p, 'קנה', 'קנתה')} ${k} מחברות. כל מחברת עולה ${pr} שקלים. ${g(p, 'הוא שילם', 'היא שילמה')} בשטר של ${pay} שקלים. כמה עודף ${g(p, 'הוא קיבל', 'היא קיבלה')}?`, ex: [`${k} × ${pr} = ${k * pr}`, `${pay} ${SUB} ${k * pr} = ${pay - k * pr}`], ans: pay - k * pr, unit: 'שקלים', hint: 'קודם חשבו כמה עלו כל המחברות, ואחר כך כמה נשאר מהשטר.' }; },
       () => { const [p, q] = two(), a = R(12, 50), b = R(3, 25);
-        return { q: `ל${p.n} יש ${a} גולות. ל${q.n} יש ${b} גולות יותר מאשר ל${p.n}. כמה גולות יש לשניהם יחד?`, ex: [`${a} + ${b} = ${a + b}`, `${a} + ${a + b} = ${2 * a + b}`], ans: 2 * a + b, unit: 'גולות', hint: `קודם מצאי כמה גולות יש ל${q.n}, ואחר כך חברי את של שניהם.` }; },
+        return { q: `ל${p.n} יש ${a} גולות. ל${q.n} יש ${b} גולות יותר מאשר ל${p.n}. כמה גולות יש לשניהם יחד?`, ex: [`${a} + ${b} = ${a + b}`, `${a} + ${a + b} = ${2 * a + b}`], ans: 2 * a + b, unit: 'גולות', hint: `קודם מצאו כמה גולות יש ל${q.n}, ואחר כך חברו את של שניהם.` }; },
       () => { const r = R(2, 5), m = R(3, 6), e = R(2, r * m - 2);
-        return { q: `בקופסה יש ${r} שורות של עוגיות, ובכל שורה ${m} עוגיות. המשפחה אכלה ${e} עוגיות. כמה עוגיות נשארו בקופסה?`, ex: [`${r} × ${m} = ${r * m}`, `${r * m} ${SUB} ${e} = ${r * m - e}`], ans: r * m - e, unit: 'עוגיות', hint: 'קודם חשבי כמה עוגיות היו בקופסה, ואחר כך כמה נשארו.' }; },
+        return { q: `בקופסה יש ${r} שורות של עוגיות, ובכל שורה ${m} עוגיות. המשפחה אכלה ${e} עוגיות. כמה עוגיות נשארו בקופסה?`, ex: [`${r} × ${m} = ${r * m}`, `${r * m} ${SUB} ${e} = ${r * m - e}`], ans: r * m - e, unit: 'עוגיות', hint: 'קודם חשבו כמה עוגיות היו בקופסה, ואחר כך כמה נשארו.' }; },
       () => { const p = person(), k = R(2, 5), pr = R(2, 5) * 2, give = R(1, k * pr / 2);
         return { q: `${p.n} ${g(p, 'קיבל', 'קיבלה')} ${pr} שקלים דמי כיס בכל שבוע, במשך ${k} שבועות. ${g(p, 'הוא הוציא', 'היא הוציאה')} ${give} שקלים על ארטיקים. כמה שקלים נשארו ${g(p, 'לו', 'לה')}?`, ex: [`${k} × ${pr} = ${k * pr}`, `${k * pr} ${SUB} ${give} = ${k * pr - give}`], ans: k * pr - give, unit: 'שקלים' }; }
     ]
@@ -1669,7 +1669,7 @@ ${placeTable(527)}
         <p>שלב 1: ${M('20 + 8 = 28')}</p>
         <p>שלב 2: ${M(`28 ${MINUS} 5 = 23`)} — תשובה: 23 נוסעים.</p>
       </div>
-      <div class="tip">בסוף, בדקי: האם התשובה הגיונית? אם נשארו יותר עוגיות ממה שהיו — משהו לא נכון!</div>
+      <div class="tip">בסוף, בדקו: האם התשובה הגיונית? אם נשארו יותר עוגיות ממה שהיו — משהו לא נכון!</div>
     `,
     skills: ['חיבור', 'חיסור', 'כפל', 'חילוק', 'שני שלבים'],
     gen: wordGen
@@ -1750,7 +1750,7 @@ ${card('acute', 45)}${card('right', 90)}${card('obtuse', 135)}${card('straight',
 <p>משווים לזווית ישרה — לפינה של דף! מניחים את פינת הדף על הקדקוד:</p>
 <ul><li>הזווית "נכנסת" בתוך הפינה ← <b>חדה</b>.</li><li>מתאימה בדיוק לפינה ← <b>ישרה</b>.</li><li>"יוצאת" מהפינה, אבל השוקיים עוד לא קו ישר ← <b>קהה</b>.</li><li>השוקיים יוצרות קו ישר ← <b>שטוחה</b>.</li></ul>
 <div class="tip">בציורים מסמנים זווית ישרה בריבוע קטן ליד הקדקוד, ושאר הזוויות — בקשת.</div>
-<div class="tip">ידעת? כשהקרן מסתובבת סיבוב שלם וחוזרת למקום — זו <b>זווית מלאה</b>, בת ${M('360°')}. זה כמו שתי זוויות שטוחות!</div>`,
+<div class="tip">ידעתם? כשהקרן מסתובבת סיבוב שלם וחוזרת למקום — זו <b>זווית מלאה</b>, בת ${M('360°')}. זה כמו שתי זוויות שטוחות!</div>`,
     gen() {
       const k = R(1, 10);
       if (k <= 5) {
@@ -1760,7 +1760,7 @@ ${card('acute', 45)}${card('right', 90)}${card('obtuse', 135)}${card('straight',
           prompt: 'איזו זווית מופיעה בציור?',
           visual: angleSVG(deg, {rot: R(0, 359), flip: Math.random() < 0.5}),
           choices: typeChoices(), answer: t,
-          hint: 'השווי לפינה של דף — זווית ישרה.',
+          hint: 'השוו לפינה של דף — זווית ישרה.',
           explain: `זו <b>זווית ${NAME(t)}</b>: ${DEF[t]}.`,
           answerText: 'זווית ' + NAME(t),
         };
@@ -1774,7 +1774,7 @@ ${card('acute', 45)}${card('right', 90)}${card('obtuse', 135)}${card('straight',
           skill: 'זיהוי זווית בציור', type: 'choice', layout: 'pics',
           prompt: `באיזה ציור יש זווית ${NAME(t)}?`,
           choices: pics, answer: t,
-          hint: 'חפשי קודם את הזווית הישרה (עם הריבוע הקטן), והשווי אליה.',
+          hint: 'חפשו קודם את הזווית הישרה (עם הריבוע הקטן), והשוו אליה.',
           explain: `זווית ${NAME(t)} היא ${DEF[t]}.`,
           answerText: 'הציור של הזווית ה' + NAME(t),
         };
@@ -1831,7 +1831,7 @@ ${card('acute', 45)}${card('right', 90)}${card('obtuse', 135)}${card('straight',
 <h3>שרטוט לפי מעלות — עם מד־זווית</h3>
 <p>מניחים את מרכז מד־הזווית על הקדקוד, ואת ה־0 על השוק הראשונה. סופרים על הסקאלה עד המספר המבוקש, ושם עוברת השוק השנייה.</p>
 <div class="ex">${angleSVG(60, {w: 130})}<p style="text-align:center">זווית של ${dg(60)}: מתחילים מ־0 ועוברים 30, ואז 60.</p></div>
-<div class="tip">באפליקציה: גררי את הנקודה שבקצה השוק. אפשר גם להשתמש בחיצים במקלדת.</div>`,
+<div class="tip">באפליקציה: גררו את הנקודה שבקצה השוק. אפשר גם להשתמש בחיצים במקלדת.</div>`,
     gen() {
       const byDeg = Math.random() < 0.5;
       let ok, prompt, ghost, explain, answerText, skill;
@@ -1840,22 +1840,22 @@ ${card('acute', 45)}${card('right', 90)}${card('obtuse', 135)}${card('straight',
         D = P([30, 40, 45, 50, 60, 70, 80, 90, 100, 110, 120, 130, 135, 140, 150, 160, 170, 180]);
         ok = v => v != null && Math.abs(v - D) <= 5;
         ghost = D; skill = 'שרטוט לפי מעלות';
-        prompt = `שרטטי זווית של ${dg(D)}`;
+        prompt = `שרטטו זווית של ${dg(D)}`;
         explain = `מתחילים מה־0 שעל השוק הימנית, וסופרים על מד־הזווית עד ${D}. שם צריכה לעבור השוק השנייה. זו זווית ${NAME(typeOf(D))}.`;
         answerText = `זווית של ${D}°`;
       } else {
         T = P(TYPES);
         ok = v => v != null && typeOf(v) === T;
         ghost = GOOD[T]; skill = 'שרטוט לפי סוג';
-        prompt = `שרטטי זווית ${NAME(T)}`;
+        prompt = `שרטטו זווית ${NAME(T)}`;
         explain = `זווית ${NAME(T)} היא ${DEF[T]}. לדוגמה: ${dg(GOOD[T])}.`;
         answerText = 'זווית ' + NAME(T);
       }
       const start = P([20, 30, 35, 120, 135, 150, 160].filter(c => !ok(c) && (!byDeg || Math.abs(c - D) >= 20)));
       return {
         skill, type: 'custom', prompt,
-        visual: `<div style="text-align:center;font-size:.9em" class="muted">גררי את הנקודה שבקצה השוק</div>`,
-        hint: byDeg ? 'שימי לב לספור מה־0 שבצד הימני של מד־הזווית.' : 'השווי לזווית ישרה — השוק שעומדת ישר למעלה.',
+        visual: `<div style="text-align:center;font-size:.9em" class="muted">גררו את הנקודה שבקצה השוק</div>`,
+        hint: byDeg ? 'שימו לב לספור מה־0 שבצד הימני של מד־הזווית.' : 'השוו לזווית ישרה — השוק שעומדת ישר למעלה.',
         explain, answerText, _start: start,
         check: ok,
         mount(el) {
@@ -1917,7 +1917,7 @@ ${byDeg ? protractor() : ''}
             lock() { locked = true; dragging = false; svg.style.cursor = 'default'; hit.style.cursor = 'default'; },
             reveal(good) {
               ray.setAttribute('class', 'w-ray ' + (good ? 's-ok' : 's-bad'));
-              let html = `הזווית ששרטטת: ${dg(cur)}`;
+              let html = `הזווית ששורטטה: ${dg(cur)}`;
               if (!good) {
                 const g = pol(VX, VY, RAY, ghost);
                 $('.w-ghost').innerHTML = `<line x1="${VX}" y1="${VY}" x2="${f1(g[0])}" y2="${f1(g[1])}" class="s-ok" stroke-width="3.5" stroke-dasharray="9 7" stroke-linecap="round"/>`;
@@ -1925,7 +1925,7 @@ ${byDeg ? protractor() : ''}
               }
               note.innerHTML = html;
             },
-            describe: v => v == null ? 'לא שרטטה' : `שרטטה זווית של ${v}°`,
+            describe: v => v == null ? 'לא שורטטה זווית' : `שורטטה זווית של ${v}°`,
           };
         },
       };
@@ -1956,7 +1956,7 @@ ${byDeg ? protractor() : ''}
           skill: 'מעלות → סוג', type: 'choice',
           prompt: `זווית של ${dg(d)} היא זווית…`,
           choices: typeChoices(), answer: t,
-          hint: `השווי את ${dg(d)} ל־${dg(90)} ול־${dg(180)}.`,
+          hint: `השוו את ${dg(d)} ל־${dg(90)} ול־${dg(180)}.`,
           explain: t === 'right' || t === 'straight' ? `זווית של ${dg(d)} בדיוק נקראת <b>זווית ${NAME(t)}</b>.` :
             t === 'acute' ? `${M(d + '° &lt; 90°')}, כלומר הזווית קטנה מזווית ישרה — לכן היא <b>חדה</b>.` :
               `${M('90° &lt; ' + d + '° &lt; 180°')}, כלומר הזווית גדולה מישרה וקטנה משטוחה — לכן היא <b>קהה</b>.`,
@@ -1988,7 +1988,7 @@ ${byDeg ? protractor() : ''}
       ]);
       return {
         skill: 'גבולות', type: 'input', unit: 'מעלות',
-        prompt: `השלימי: ${b[0]}${BL} מעלות`,
+        prompt: `השלימו: ${b[0]}${BL} מעלות`,
         answer: b[1], explain: b[2], answerText: b[1] + '°',
       };
     },
@@ -2107,7 +2107,7 @@ ${byDeg ? protractor() : ''}
             skill: 'איזו זווית היא…', type: 'choice',
             prompt: `איזו זווית היא ${NAME(t)}?`, visual: shapeSVG(S, null),
             choices: shuffle([LET[i], ...others]).map(l => ({label: 'זווית ' + l, value: l})), answer: LET[i],
-            hint: 'בדקי כל קדקוד בעזרת פינה של דף.',
+            hint: 'בדקו כל קדקוד בעזרת פינה של דף.',
             explain: `נבדוק כל זווית:${listAngles(S)}רק זווית ${LET[i]} היא ${NAME(t)}.`,
             answerText: 'זווית ' + LET[i],
             _angles: S.A,
@@ -2121,7 +2121,7 @@ ${byDeg ? protractor() : ''}
           skill: 'ספירת זוויות לפי סוג', type: 'input',
           prompt: `כמה זוויות ${PLUR[t]} יש ב${POLY[n]} הזה?`, visual: shapeSVG(S, null),
           answer: c,
-          hint: `ב${POLY[n]} יש ${n} זוויות. בדקי כל אחת.`,
+          hint: `ב${POLY[n]} יש ${n} זוויות. בדקו כל אחת.`,
           explain: `נבדוק את כל ${n} הזוויות:${listAngles(S)}` +
             (c === 0 ? `אין כאן אף זווית ${NAME(t)} — התשובה היא 0.` : `יש ${c === 1 ? `זווית ${NAME(t)} אחת` : c + ' זוויות ' + PLUR[t]}.`),
           answerText: String(c),
@@ -2135,7 +2135,7 @@ ${byDeg ? protractor() : ''}
         skill: 'סוג זווית מסומנת', type: 'choice',
         prompt: `איזו זווית היא זווית ${LET[i]} המסומנת?`, visual: shapeSVG(S, i),
         choices: ['acute', 'right', 'obtuse'].map(x => ({label: NAME(x), value: x})), answer: t,
-        hint: 'השווי את הזווית המסומנת לפינה של דף.',
+        hint: 'השוו את הזווית המסומנת לפינה של דף.',
         explain: `זווית ${LET[i]} היא ${approx(S.A[i])}, ` +
           (t === 'right' ? 'בדיוק כמו פינה של דף (ולכן מסומנת בריבוע) — <b>ישרה</b>.' :
             t === 'acute' ? 'קטנה מזווית ישרה — <b>חדה</b>.' : 'גדולה מזווית ישרה וקטנה משטוחה — <b>קהה</b>.'),
@@ -2211,7 +2211,7 @@ function useStore(){ useSyncExternalStore(Store.subscribe, Store.snap); return S
 // ---------- stats ----------
 const rate = arr => arr.length ? arr.filter(x=>x.ok).length/arr.length : null;
 const STATUS = {
-  strong:{label:'חזקה', cls:'strong'}, mid:{label:'בדרך', cls:'mid'}, weak:{label:'צריכה תרגול', cls:'weak'},
+  strong:{label:'שליטה טובה', cls:'strong'}, mid:{label:'בדרך', cls:'mid'}, weak:{label:'צריך תרגול', cls:'weak'},
   new:{label:'עוד לא תורגל', cls:'new'}, few:{label:'מעט נתונים', cls:'new'}
 };
 function statusOf(acc,n){ if(!n) return 'new'; if(n<4) return 'few'; if(acc>=0.85) return 'strong'; if(acc>=0.6) return 'mid'; return 'weak'; }
@@ -2280,8 +2280,8 @@ function strip(h){ h=String(h||'').replace(/<(\/?)(span|div|td|th|tr|br|p|li)\b[
 const esc = s => String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const pct = a => a==null ? '—' : Math.round(a*100)+'%';
 const fmtDate = t => { const d=new Date(t); return d.toLocaleDateString('he-IL',{day:'numeric',month:'numeric'})+' · '+d.toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit'}); };
-const PRAISE=['כל הכבוד!','מצוין!','יפה מאוד!','נכון! איזו אלופה','בדיוק!','מעולה!'];
-const TRY_AGAIN=['כמעט! נסי שוב','לא בדיוק, עוד ניסיון אחד','אופס, בדקי שוב'];
+const PRAISE=['כל הכבוד!','מצוין!','יפה מאוד!','נכון! אלופים','בדיוק!','מעולה!'];
+const TRY_AGAIN=['כמעט! נסו שוב','לא בדיוק, עוד ניסיון אחד','אופס, בדקו שוב'];
 const SUBJ={math:'חשבון',geo:'הנדסה'};
 const MODE={practice:'תרגול',smart:'תרגול חכם',exam:'מבחן לדוגמה'};
 function starsFor(r){ return r>=0.9?3 : r>=0.7?2 : r>=0.5?1 : 0; }
@@ -2316,7 +2316,7 @@ function Quiz({cfg,onExit,onFinish}){
     let ok;
     if(q.type==='input'){
       const s=String(v).replace(/[\s,]/g,'');
-      if(s===''||isNaN(Number(s))){ setFb({kind:'info',title:'כתבי מספר ואז לחצי על "בדיקה"'}); return; }
+      if(s===''||isNaN(Number(s))){ setFb({kind:'info',title:'כתבו מספר ואז לחצו על "בדיקה"'}); return; }
       ok = Number(s)===q.answer; given=s;
     } else if(q.type==='choice'){
       ok = String(v)===String(q.answer); setPicked(String(v));
@@ -2329,7 +2329,7 @@ function Quiz({cfg,onExit,onFinish}){
       setTries(1); firstGiven.current=given;
       if(q.type==='choice') setWrong(w=>w.concat(String(v)));
       if(q.type==='input'){ setInState('wrong'); setTimeout(()=>inp.current&&inp.current.select(),0); }
-      setFb({kind:'bad',title:P(TRY_AGAIN),body:q.hint||'קראי שוב את השאלה בעיון ונסי עוד פעם.'});
+      setFb({kind:'bad',title:P(TRY_AGAIN),body:q.hint||'קראו שוב את השאלה בעיון ונסו עוד פעם.'});
       return;
     }
     finish(false,false,given);
@@ -2347,7 +2347,7 @@ function Quiz({cfg,onExit,onFinish}){
     });
     const ansTxt = q.answerText!=null ? q.answerText : q.answer;
     setFb(correct
-      ? {kind:'ok',title: firstTry ? P(PRAISE) : 'נכון! הצלחת בניסיון השני', body:q.explain}
+      ? {kind:'ok',title: firstTry ? P(PRAISE) : 'נכון! הצלחה בניסיון השני', body:q.explain}
       : {kind:'bad',title:'לא נורא, ככה לומדים!', body:'<p><b>התשובה הנכונה: '+(q.type==='choice'&&q.answerText==null ? '' : esc(ansTxt))+'</b></p>'+(q.explain||'')});
   }
   function next(){
@@ -2408,7 +2408,7 @@ function Quiz({cfg,onExit,onFinish}){
 function Result({res,onAgain,onHome,onParent,name}){
   const total=res.items.length, score=res.items.filter(x=>x.ok).length, r=total?score/total:0, st=starsFor(r);
   const byT={}; res.items.forEach(x=>{ (byT[x.topic]=byT[x.topic]||[]).push(x); });
-  const msg = r>=0.9 ? 'וואו! את מוכנה למבחן' : r>=0.7 ? 'עבודה טובה! עוד קצת תרגול ואת שם' : r>=0.5 ? 'התחלה טובה. כדאי לתרגל עוד' : 'כדאי לחזור על ההסבר ולתרגל שוב';
+  const msg = r>=0.9 ? 'וואו! מוכנים למבחן' : r>=0.7 ? 'עבודה טובה! עוד קצת תרגול וזה שם' : r>=0.5 ? 'התחלה טובה. כדאי לתרגל עוד' : 'כדאי לחזור על ההסבר ולתרגל שוב';
   return html`<div class="quiz">
     <div class="card result">
       <div class="eyebrow">${MODE[res.mode]} · ${res.title}</div>
@@ -2448,9 +2448,9 @@ function Home({stats,name,go}){
     <div class="hero">
       <div class="card hero-main">
         <div class="eyebrow">חזרה למבחן · חשבון והנדסה</div>
-        <h1>${name ? 'היי '+name+', מוכנה להתאמן?' : 'היי! מוכנה להתאמן למבחן?'}</h1>
-        <p class="muted">בחרי נושא, קראי את ההסבר ותרגלי. בכל שאלה יש שני ניסיונות, ואחרי כל תשובה מופיע הסבר.</p>
-        <div class="row"><button class="btn primary lg" onClick=${()=>go.smart()}>התחילי תרגול חכם</button>
+        <h1>${name ? 'היי '+name+'! מתאמנים למבחן?' : 'היי! מוכנים להתאמן למבחן?'}</h1>
+        <p class="muted">בחרו נושא, קראו את ההסבר ותרגלו. בכל שאלה יש שני ניסיונות, ואחרי כל תשובה מופיע הסבר.</p>
+        <div class="row"><button class="btn primary lg" onClick=${()=>go.smart()}>להתחיל תרגול חכם</button>
         <span class="muted" style=${{fontSize:'.88rem'}}>12 שאלות, יותר מהנושאים שצריך לחזק</span></div>
       </div>
       <div class="card hero-side">
@@ -2483,7 +2483,7 @@ function TopicPage({tid,stats,go}){
       <button class="btn primary lg" onClick=${()=>go.practice(tid)}>תרגול: 10 שאלות</button>
     </div>
     <article class="card learn"><${Html} h=${t.learn} cls="learn-body" /></article>
-    <div class="row" style=${{justifyContent:'center'}}><button class="btn primary lg" onClick=${()=>go.practice(tid)}>הבנתי, בואי נתרגל</button></div>
+    <div class="row" style=${{justifyContent:'center'}}><button class="btn primary lg" onClick=${()=>go.practice(tid)}>הבנתי, בואו נתרגל</button></div>
   </div>`;
 }
 
@@ -2510,14 +2510,14 @@ function Parent({stats,store,go}){
     <div class="panel-h">
       <div style=${{display:'flex',flexDirection:'column',gap:'4px'}}>
         <div class="eyebrow">לוח מעקב להורים</div>
-        <h1>${store.name ? 'ההתקדמות של '+store.name : 'איפה היא חזקה ואיפה צריך לחזק'}</h1>
+        <h1>${store.name ? 'ההתקדמות של '+store.name : 'מה כבר שולטים בו ומה צריך לחזק'}</h1>
       </div>
       <span class="sync" style=${{'--sync':syncCol}}>${syncTxt}</span>
     </div>
 
     ${all.length===0 ? html`<div class="card empty">
       <h2>עוד אין נתונים</h2>
-      <p>אחרי שהיא תפתור את התרגול הראשון, יופיעו כאן אחוזי הצלחה לכל נושא, הטעויות שלה והמלצות למה לתרגל.</p>
+      <p>אחרי התרגול הראשון יופיעו כאן אחוזי הצלחה לכל נושא, הטעויות והמלצות למה לתרגל.</p>
       <button class="btn primary" onClick=${go.smart}>להתחיל תרגול חכם</button>
     </div>` : html`
     <div class="kpis">
@@ -2532,12 +2532,12 @@ function Parent({stats,store,go}){
         <button class="btn primary" onClick=${go.smart}>תרגול חכם על החולשות</button></div>
       ${focus.length ? html`<div class="focus-list">${focus.map(p=>{ const t=TOPIC[p.id]; const ws=weakestSkill(p); return html`<div class=${'focus '+t.sub} key=${p.id}>
         <div class="row" style=${{justifyContent:'space-between'}}><b>${t.name}</b><span class=${'pill '+STATUS[p.status].cls}>${pct(p.acc)}</span></div>
-        <small>${ws ? 'הכי קשה לה: '+ws : SUBJ[t.sub]}</small>
+        <small>${ws ? 'הכי קשה: '+ws : SUBJ[t.sub]}</small>
         <button class="btn" onClick=${()=>go.practice(p.id,true)}>תרגול ממוקד</button>
       </div>`; })}</div>`
-      : html`<p class="muted">אין כרגע נושא שמתחת ל־85% הצלחה. ${untouched.length ? 'נשארו נושאים שעוד לא תורגלו: '+untouched.map(p=>TOPIC[p.id].name).join(', ')+'.' : 'כל הכבוד לה!'}</p>`}
+      : html`<p class="muted">אין כרגע נושא שמתחת ל־85% הצלחה. ${untouched.length ? 'נשארו נושאים שעוד לא תורגלו: '+untouched.map(p=>TOPIC[p.id].name).join(', ')+'.' : 'כל הכבוד!'}</p>`}
       ${focus.length && untouched.length ? html`<p class="muted" style=${{fontSize:'.9rem'}}>עוד לא תורגלו: ${untouched.map(p=>TOPIC[p.id].name).join(', ')}</p>` : null}
-      ${strong.length ? html`<p class="muted" style=${{fontSize:'.9rem'}}>חזקה ב: ${strong.map(p=>TOPIC[p.id].name).join(', ')}</p>` : null}
+      ${strong.length ? html`<p class="muted" style=${{fontSize:'.9rem'}}>שליטה טובה ב: ${strong.map(p=>TOPIC[p.id].name).join(', ')}</p>` : null}
     </div>
 
     <div class="card panel">
@@ -2570,7 +2570,7 @@ function Parent({stats,store,go}){
         <h2>טעויות אחרונות</h2>
         ${mistakes.length ? html`<div class="mist">${mistakes.map((m,k)=>html`<div class="mrow" key=${k}>
           <span class="q">${m.q}</span>
-          <span class="ans"><span class="given">ענתה: <b><bdi>${m.given||'—'}</bdi></b></span><span class="corr">נכון: <b><bdi>${m.correct}</bdi></b></span></span>
+          <span class="ans"><span class="given">התשובה שניתנה: <b><bdi>${m.given||'—'}</bdi></b></span><span class="corr">נכון: <b><bdi>${m.correct}</bdi></b></span></span>
           <span class="muted" style=${{fontSize:'.8rem'}}>${TOPIC[m.topic]?TOPIC[m.topic].name:''}</span>
         </div>`)}</div>` : html`<p class="muted">אין טעויות עד עכשיו.</p>`}
       </div>
@@ -2588,7 +2588,7 @@ function Parent({stats,store,go}){
     <div class="card panel">
       <h2>הגדרות</h2>
       <div class="row" style=${{alignItems:'flex-end'}}>
-        <div class="field"><label for="child-name">שם הילדה (לברכה במסך הבית)</label>
+        <div class="field"><label for="child-name">שם הילד/ה (לברכה במסך הבית)</label>
           <input id="child-name" value=${nm} onInput=${e=>setNm(e.target.value)} maxlength="24" /></div>
         <button class="btn" onClick=${()=>store.setName(nm.trim())}>שמירה</button>
       </div>
