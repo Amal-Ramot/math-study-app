@@ -1,7 +1,7 @@
 {
   "name": "math-study-app",
   "productName": "מחברת חזרה למבחן",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "מחברת חזרה למבחן במתמטיקה וגאומטריה — Math & geometry test study app",
   "main": "main.js",
   "author": "Math Study App",
