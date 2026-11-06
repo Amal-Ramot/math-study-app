@@ -25,7 +25,14 @@
     "productName": "מחברת חזרה למבחן",
     "executableName": "math-study-app",
     "artifactName": "Math-Study-${os}-${arch}-${version}.${ext}",
-    "publish": null,
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "Amal-Ramot",
+        "repo": "math-study-app",
+        "releaseType": "release"
+      }
+    ],
     "directories": {
       "output": "dist",
       "buildResources": "build"
@@ -94,5 +101,12 @@
       "artifactName": "Math-Study-${version}-linux-${arch}.${ext}"
     }
   },
-  "desktopName": "math-study-app.desktop"
+  "desktopName": "math-study-app.desktop",
+  "dependencies": {
+    "electron-updater": "^6.8.11"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Amal-Ramot/math-study-app.git"
+  }
 }
