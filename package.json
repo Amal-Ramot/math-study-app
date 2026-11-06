@@ -1,0 +1,98 @@
+{
+  "name": "math-study-app",
+  "productName": "מחברת חזרה למבחן",
+  "version": "1.0.0",
+  "description": "מחברת חזרה למבחן במתמטיקה וגאומטריה — Math & geometry test study app",
+  "main": "main.js",
+  "author": "Math Study App",
+  "license": "UNLICENSED",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "vendor": "node scripts/vendor.js",
+    "icon": "node scripts/make-icon.js",
+    "dist": "electron-builder --publish never",
+    "dist:win": "electron-builder --win --publish never",
+    "dist:mac": "electron-builder --mac --publish never",
+    "dist:linux": "electron-builder --linux --publish never"
+  },
+  "devDependencies": {
+    "electron": "^44.10.0",
+    "electron-builder": "^26.0.12"
+  },
+  "build": {
+    "appId": "app.mathstudy.notebook",
+    "productName": "מחברת חזרה למבחן",
+    "executableName": "math-study-app",
+    "artifactName": "Math-Study-${os}-${arch}-${version}.${ext}",
+    "publish": null,
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "main.js",
+      "package.json",
+      "app/**/*",
+      "build/icon.png"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "מחברת חזרה למבחן",
+      "uninstallDisplayName": "מחברת חזרה למבחן",
+      "artifactName": "Math-Study-Setup-${version}.${ext}",
+      "unicode": true
+    },
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "universal"
+          ]
+        }
+      ],
+      "category": "public.app-category.education",
+      "icon": "build/icon.png",
+      "identity": null,
+      "hardenedRuntime": false,
+      "gatekeeperAssess": false
+    },
+    "dmg": {
+      "artifactName": "Math-Study-${version}-mac.${ext}"
+    },
+    "linux": {
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "category": "Education",
+      "icon": "build/icon.png",
+      "synopsis": "Math & geometry study app",
+      "syncDesktopName": true
+    },
+    "appImage": {
+      "artifactName": "Math-Study-${version}-linux-${arch}.${ext}"
+    }
+  },
+  "desktopName": "math-study-app.desktop"
+}
