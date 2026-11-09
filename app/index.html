@@ -225,6 +225,26 @@ svg text{font-family:var(--display)}
   .hrow .c-time{display:none}
   .bd-row{grid-template-columns:minmax(0,1fr) 80px 46px}
 }
+
+/* review sheet widgets */
+.review-card{border-color:color-mix(in srgb,var(--acc) 45%,var(--border));background:linear-gradient(var(--acc-soft),var(--surface) 70%)}
+.mini-in{font-family:var(--display);font-size:1.3rem;text-align:center;padding:6px 4px;border-radius:10px;border:2px solid var(--border-strong);background:var(--surface);color:var(--text)}
+.mini-in:focus{outline:none;border-color:var(--acc);box-shadow:0 0 0 3px var(--acc-soft)}
+.mini-in.right{border-color:var(--ok);background:var(--ok-soft)} .mini-in.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.fix{display:block;font-family:var(--display);font-weight:600;color:var(--ok);font-size:1rem;margin-top:2px}
+.rtable-wrap{overflow-x:auto;max-width:100%}
+.rtable{border-collapse:collapse;font-variant-numeric:tabular-nums}
+.rtable th,.rtable td{border:1.5px solid var(--border-strong);padding:8px;text-align:center;vertical-align:top}
+.rtable th{font-size:.85rem;color:var(--muted);background:var(--surface-2)}
+.rtable td b{font-family:var(--display);font-size:1.4rem}
+.par{display:flex;flex-direction:column;gap:6px}
+.par button{border:2px solid var(--border);background:var(--surface);border-radius:10px;padding:5px 10px;cursor:pointer;font-weight:600;white-space:nowrap}
+.par button[aria-pressed="true"]{border-color:var(--acc);background:var(--acc-soft)}
+.par button.right{border-color:var(--ok);background:var(--ok-soft)} .par button.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.chip.in{padding:4px;border-style:dashed;border-color:var(--acc)} .chip.in .mini-in{border:0;background:transparent;font-size:1.4rem}
+.chip.in .fix{font-size:.9rem}
+.chip.in.right{border-style:solid;border-color:var(--ok);background:var(--ok-soft)} .chip.in.wrong{border-style:solid;border-color:var(--bad);background:var(--bad-soft)}
+@media (max-width:480px){.rtable th,.rtable td{padding:6px 4px}.mini-in{font-size:1.1rem}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 
@@ -2146,6 +2166,235 @@ ${byDeg ? protractor() : ''}
   });
 })();
 
+// Fixed review sheets copied from the class whiteboard. Each item belongs to an
+// existing topic (tid) so results flow into the same parent-dashboard stats.
+(() => {
+  const sets = (window.REVIEW_SETS = window.REVIEW_SETS || []);
+
+  const esc = (s) => String(s).replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+  const parity = (n) => (n % 2 === 0 ? 'זוגי' : 'אי־זוגי');
+  const toNum = (v) => { const s = String(v == null ? '' : v).replace(/[^\d]/g, ''); return s === '' ? null : Number(s); };
+
+  // ---------- small widgets ----------
+  function inputHTML(id, w) {
+    return '<input class="mini-in" data-k="' + id + '" dir="ltr" inputmode="numeric" autocomplete="off" style="width:' + (w || 4.6) + 'ch">';
+  }
+  function markInputs(el, map) {
+    el.querySelectorAll('.mini-in').forEach((inp) => {
+      const k = inp.dataset.k; if (!(k in map)) return;
+      const ok = toNum(inp.value) === map[k];
+      inp.classList.add(ok ? 'right' : 'wrong');
+      const chip = inp.closest('.chip'); if (chip) chip.classList.add(ok ? 'right' : 'wrong');
+      if (!ok) { const s = document.createElement('span'); s.className = 'fix'; s.textContent = map[k]; inp.after(s); }
+    });
+  }
+
+  // Table row: number | previous | next | even/odd
+  function tableRow(spec) {
+    // spec: {n} known number, or {prev} known, or {next} known
+    const n = spec.n != null ? spec.n : spec.prev != null ? spec.prev + 1 : spec.next - 1;
+    const truth = { n, prev: n - 1, next: n + 1, par: parity(n) };
+    const known = spec.n != null ? 'n' : spec.prev != null ? 'prev' : 'next';
+    const cell = (k) => (k === known ? '<b>' + truth[k] + '</b>' : inputHTML(k));
+    const prompt = 'השלימו את השורה בטבלה:';
+    return {
+      tid: 'concepts',
+      make: () => ({
+        skill: 'מספר עוקב',
+        prompt,
+        type: 'custom',
+        answerText: 'המספר ' + n + ', הקודם ' + (n - 1) + ', העוקב ' + (n + 1) + ', ' + parity(n),
+        hint: 'הקודם בא מיד לפני (פחות 1), העוקב בא מיד אחרי (ועוד 1). זוגי או אי־זוגי לפי ספרת היחידות.',
+        explain:
+          '<p>המספר <b>' + M(n) + '</b>: הקודם ' + M((n) + ' − 1 = ' + (n - 1)) + ', העוקב ' + M(n + ' + 1 = ' + (n + 1)) + '.</p>' +
+          '<p>ספרת היחידות היא ' + (n % 10) + ', לכן המספר <b>' + parity(n) + '</b>.</p>',
+        mount(el) {
+          el.innerHTML =
+            '<div class="rtable-wrap"><table class="rtable"><tr><th>המספר</th><th>הקודם</th><th>העוקב</th><th>זוגי / אי־זוגי</th></tr>' +
+            '<tr><td>' + cell('n') + '</td><td>' + cell('prev') + '</td><td>' + cell('next') + '</td>' +
+            '<td><div class="par"><button type="button" data-p="זוגי">זוגי</button><button type="button" data-p="אי־זוגי">אי־זוגי</button></div></td></tr></table></div>';
+          let par = null;
+          el.querySelectorAll('.par button').forEach((b) => b.addEventListener('click', () => {
+            par = b.dataset.p; el.querySelectorAll('.par button').forEach((x) => x.setAttribute('aria-pressed', x === b ? 'true' : 'false'));
+          }));
+          const get = () => {
+            const v = { par };
+            el.querySelectorAll('.mini-in').forEach((i) => { v[i.dataset.k] = toNum(i.value); });
+            return v;
+          };
+          return {
+            value() { const v = get(); return Object.values(v).some((x) => x == null) ? null : v; },
+            lock() { el.querySelectorAll('input,button').forEach((x) => (x.disabled = true)); },
+            reveal() {
+              const m = {}; ['n', 'prev', 'next'].forEach((k) => { if (k !== known) m[k] = truth[k]; });
+              markInputs(el, m);
+              el.querySelectorAll('.par button').forEach((b) => { if (b.dataset.p === truth.par) b.classList.add('right'); else if (b.getAttribute('aria-pressed') === 'true') b.classList.add('wrong'); });
+            },
+            describe(v) { return ['n', 'prev', 'next'].filter((k) => k !== known).map((k) => v[k]).join(', ') + ', ' + v.par; },
+          };
+        },
+        check(v) { return ['n', 'prev', 'next'].every((k) => k === known || v[k] === truth[k]) && v.par === truth.par; },
+      }),
+    };
+  }
+
+  // Sequence: given 3 terms, fill the next 3
+  function seqFill(terms, step) {
+    const next = [1, 2, 3].map((i) => terms[2] + step * i);
+    return {
+      tid: 'seq',
+      make: () => ({
+        skill: 'המספר הבא',
+        prompt: 'השלימו את הסדרה:',
+        type: 'custom',
+        answerText: next.join(', '),
+        hint: 'בדקו בכמה גדל כל מספר לעומת המספר שלפניו, והמשיכו באותה קפיצה.',
+        explain: '<p>בכל צעד מוסיפים ' + step + ': ' + M(terms[2] + ' + ' + step + ' = ' + next[0]) + ', ' + M(next[0] + ' + ' + step + ' = ' + next[1]) + ', ' + M(next[1] + ' + ' + step + ' = ' + next[2]) + '.</p>',
+        mount(el) {
+          el.innerHTML = '<div class="seq">' + terms.map((t) => '<span class="chip">' + t + '</span>').join('') +
+            [0, 1, 2].map((i) => '<span class="chip in">' + inputHTML('s' + i, 4.2) + '</span>').join('') + '</div>';
+          return {
+            value() { const v = [0, 1, 2].map((i) => toNum(el.querySelector('[data-k="s' + i + '"]').value)); return v.some((x) => x == null) ? null : v; },
+            lock() { el.querySelectorAll('input').forEach((x) => (x.disabled = true)); },
+            reveal() { markInputs(el, { s0: next[0], s1: next[1], s2: next[2] }); },
+            describe(v) { return v.join(', '); },
+          };
+        },
+        check(v) { return v.every((x, i) => x === next[i]); },
+      }),
+    };
+  }
+
+  function seqRule(terms, step, others) {
+    const label = (s) => (s > 0 ? '+' : '−') + Math.abs(s);
+    return {
+      tid: 'seq',
+      make: () => ({
+        skill: 'מציאת החוק',
+        prompt: 'מה החוקיות של הסדרה?',
+        visual: '<div class="seq">' + terms.map((t) => '<span class="chip">' + t + '</span>').join('') + '<span class="chip">…</span></div>',
+        type: 'choice', ltr: true,
+        choices: [step].concat(others).map((s) => ({ label: label(s), value: label(s) })),
+        answer: label(step),
+        answerText: 'בכל צעד ' + (step > 0 ? 'מוסיפים ' : 'מחסירים ') + Math.abs(step) + ' (' + label(step) + ')',
+        explain: '<p>' + M(terms[1] + ' − ' + terms[0] + ' = ' + step) + '. בכל צעד מוסיפים ' + step + '.</p>',
+      }),
+    };
+  }
+
+  function wordsQ(n, others) {
+    return {
+      tid: 'naming',
+      make: () => ({
+        skill: 'ממספר למילים',
+        prompt: 'כתבו את המספר במילים. בחרו את הכתיב הנכון של ' + M(n) + ':',
+        type: 'choice', layout: 'wide',
+        choices: shuffle([n].concat(others)).map((x) => ({ label: heb(x), value: x })),
+        answer: n,
+        answerText: heb(n),
+        explain: '<p>' + M(n) + ' = <b>' + heb(n) + '</b></p>' + placeTable(n),
+      }),
+    };
+  }
+
+  function inputQ(tid, skill, prompt, answer, explain, extra) {
+    return {
+      tid,
+      make: () => Object.assign({ skill, prompt, type: 'input', answer, answerText: String(answer), explain }, extra || {}),
+    };
+  }
+
+  // open-ended: any number that satisfies a rule
+  function openQ(tid, skill, prompt, accept, answerText, explain, hint) {
+    return {
+      tid,
+      make: () => ({ skill, prompt, type: 'input', accept, answer: null, answerText, explain, hint }),
+    };
+  }
+
+  sets.push({
+    id: 'board-2026-11-09',
+    title: 'חזרה למבחן מהלוח',
+    date: '9.11',
+    note: 'השאלות מהלוח בכיתה, בדיוק לפי הסדר',
+    items: [
+      // 1
+      wordsQ(436, [463, 346, 406]),
+      wordsQ(708, [780, 78, 807]),
+      wordsQ(950, [905, 590, 915]),
+      inputQ('build', 'ערך הספרה', 'במספר ' + M(582) + ', מהי <b>ספרת העשרות</b>?', 8,
+        '<p>במספר ' + M(582) + ': 5 מאות, <b>8 עשרות</b>, 2 יחידות. ספרת העשרות היא <b>8</b>.</p>' + placeTable(582)),
+      inputQ('build', 'ערך הספרה', 'מהו <b>הערך</b> של הספרה 7 במספר ' + M(374) + '?', 70,
+        '<p>הספרה 7 נמצאת במקום העשרות, לכן הערך שלה הוא <b>7 עשרות = 70</b>.</p>' + placeTable(374),
+        { hint: 'ערך הספרה תלוי במקום שלה: יחידות, עשרות או מאות.' }),
+      // 2
+      tableRow({ n: 349 }),
+      tableRow({ n: 600 }),
+      tableRow({ prev: 784 }),
+      tableRow({ next: 928 }),
+      // 3
+      openQ('concepts', 'דו־ספרתי ותלת־ספרתי', 'כתבו מספר <b>דו־ספרתי</b> הגדול מ־' + M(50) + ':',
+        (n) => n > 50 && n <= 99, 'כל מספר מ־51 עד 99',
+        '<p>מספר דו־ספרתי הגדול מ־50: כל מספר מ־' + M(51) + ' עד ' + M(99) + ' מתאים. למשל ' + M(73) + '.</p>',
+        'מספר דו־ספרתי יש לו 2 ספרות (עד 99), והוא צריך להיות גדול מ־50.'),
+      openQ('concepts', 'זוגי ואי־זוגי', 'כתבו מספר <b>תלת־ספרתי אי־זוגי</b> הקטן מ־' + M(300) + ':',
+        (n) => n >= 100 && n < 300 && n % 2 === 1, 'כל מספר אי־זוגי מ־101 עד 299',
+        '<p>צריך 3 ספרות (100 ומעלה), קטן מ־300, וספרת היחידות 1, 3, 5, 7 או 9. למשל ' + M(157) + ' או ' + M(299) + '.</p>',
+        'בדקו שלוש דרישות: 3 ספרות, קטן מ־300, ואי־זוגי (ספרת היחידות 1, 3, 5, 7 או 9).'),
+      {
+        tid: 'concepts',
+        make: () => ({
+          skill: 'זוגי ואי־זוגי', prompt: 'האם המספר ' + M(999) + ' הוא זוגי או אי־זוגי?',
+          type: 'choice', choices: ['זוגי', 'אי־זוגי'], answer: 'אי־זוגי', answerText: 'אי־זוגי',
+          explain: '<p>ספרת היחידות של ' + M(999) + ' היא 9, לכן הוא <b>אי־זוגי</b>.</p>',
+        }),
+      },
+      // 4
+      inputQ('build', 'מספר גדול/קטן מספרות', 'השתמשו בספרות ' + M('8, 2, 5') + ', כל ספרה פעם אחת בלבד. בנו את המספר <b>הגדול ביותר</b>:', 852,
+        '<p>שמים את הספרה הגדולה במאות, אחריה בעשרות, ואת הקטנה ביחידות: <b>' + M(852) + '</b>.</p>'),
+      inputQ('build', 'מספר גדול/קטן מספרות', 'השתמשו בספרות ' + M('8, 2, 5') + ', כל ספרה פעם אחת בלבד. בנו את המספר <b>הקטן ביותר</b>:', 258,
+        '<p>שמים את הספרה הקטנה במאות, אחריה בעשרות, ואת הגדולה ביחידות: <b>' + M(258) + '</b>.</p>'),
+      inputQ('build', 'מספר גדול/קטן מספרות', 'השתמשו בספרות ' + M('8, 2, 5') + ', כל ספרה פעם אחת בלבד. בנו מספר <b>אי־זוגי</b> הקטן מ־' + M(600) + ':', 285,
+        '<p>כדי שהמספר יהיה אי־זוגי, ספרת היחידות חייבת להיות 5. נשארו 8 ו־2: ' + M(825) + ' או ' + M(285) + '. רק ' + M(285) + ' קטן מ־600.</p>',
+        { hint: 'איזו מהספרות 8, 2, 5 יכולה להיות ביחידות כדי שהמספר יהיה אי־זוגי?' }),
+      // 5
+      seqFill([125, 150, 175], 25),
+      seqRule([125, 150, 175], 25, [50, -25, 5]),
+      seqFill([48, 56, 64], 8),
+      seqRule([48, 56, 64], 8, [6, -8, 10]),
+      // 6
+      inputQ('eq', 'מחובר/מחסר חסר', 'מצאו את המספר החסר:', 48,
+        '<p>' + M('84 − 36 = 48') + '. בדיקה: ' + M('36 + 48 = 84') + ' ✔</p>', { visual: BIG('36 + ' + BL + ' = 84') }),
+      inputQ('eq', 'מחובר/מחסר חסר', 'מצאו את המספר החסר:', 72,
+        '<p>' + M('45 + 27 = 72') + '. בדיקה: ' + M('72 − 27 = 45') + ' ✔</p>', { visual: BIG(BL + ' − 27 = 45') }),
+      inputQ('eq', 'גורם חסר (כפל וחילוק)', 'מצאו את המספר החסר:', 48,
+        '<p>' + M('8 × 6 = 48') + ', לכן ' + M('48 : 6 = 8') + ' ✔</p>', { visual: BIG(BL + ' : 6 = 8') }),
+      openQ('eq', 'אי־שוויון עם נעלם', 'מצאו מספר שמתאים במקום ה־? (יש כמה תשובות נכונות):',
+        (n) => n > 25 && n <= 1000, 'כל מספר גדול מ־25 (למשל 30)',
+        '<p>' + M('45 + 25 = 70') + ' — שווה, לא גדול. לכן צריך מספר <b>גדול מ־25</b>: למשל ' + M('45 + 30 = 75') + ', ו־' + M('70 &lt; 75') + ' ✔</p>',
+        'קודם מצאו איזה מספר נותן בדיוק 70, ואז חשבו: צריך יותר או פחות?'),
+      openQ('eq', 'אי־שוויון עם נעלם', 'מצאו מספר שמתאים במקום ה־? (יש כמה תשובות נכונות):',
+        (n) => n >= 90 && n < 140, 'כל מספר מ־90 עד 139',
+        '<p>' + M('140 − 90 = 50') + ' — שווה, לא קטן. לכן צריך מספר <b>קטן מ־140</b> (ולפחות 90, כדי שאפשר יהיה להחסיר 90). למשל ' + M('100 − 90 = 10') + ', ו־' + M('50 &gt; 10') + ' ✔</p>',
+        'קודם מצאו איזה מספר נותן בדיוק 50, ואז חשבו: צריך יותר או פחות?'),
+      inputQ('eq', 'מחובר/מחסר חסר', 'מצאו את המספר החסר:', 80,
+        '<p>' + M('200 − 120 = 80') + '. בדיקה: ' + M('120 + 80 = 200') + ' ✔</p>', { visual: BIG('120 + ' + BL + ' = 200') }),
+    ],
+  });
+
+  // visuals for the two inequalities (kept separate so the prompt text stays short)
+  const s = sets[sets.length - 1];
+  const ineqVis = [BIG('70 &lt; ' + BL + ' + 45'), BIG('50 &gt; ' + BL + ' − 90')];
+  let k = 0;
+  s.items.forEach((it) => {
+    const base = it.make;
+    if (it.tid === 'eq' && /אי־שוויון/.test(base().skill)) {
+      const vis = ineqVis[k++];
+      it.make = () => Object.assign(base(), { visual: vis });
+    }
+  });
+})();
+
 (function(){
 const {useState,useEffect,useRef,useMemo,useSyncExternalStore} = React;
 const html = htm.bind(React.createElement);
@@ -2268,6 +2517,7 @@ function examPlan(sub){
   return shuffle(plan);
 }
 function makeQ(item){
+  if(item.make){ try{ return item.make(); }catch(e){ console.error(e); } }
   const t=TOPIC[item.tid]; let q=null;
   for(let k=0;k<30;k++){
     try{ const c=t.gen(); if(c){ q=c; if(!item.skill || c.skill===item.skill) break; } }catch(e){ console.error(e); }
@@ -2285,7 +2535,8 @@ const fmtDate = t => { const d=new Date(t); return d.toLocaleDateString('he-IL',
 const PRAISE=['כל הכבוד!','מצוין!','יפה מאוד!','נכון! אלופים','בדיוק!','מעולה!'];
 const TRY_AGAIN=['כמעט! נסו שוב','לא בדיוק, עוד ניסיון אחד','אופס, בדקו שוב'];
 const SUBJ={math:'חשבון',geo:'הנדסה'};
-const MODE={practice:'תרגול',smart:'תרגול חכם',exam:'מבחן לדוגמה'};
+const MODE={practice:'תרגול',smart:'תרגול חכם',exam:'מבחן לדוגמה',review:'דף חזרה'};
+const REVIEWS = () => (window.REVIEW_SETS||[]);
 function starsFor(r){ return r>=0.9?3 : r>=0.7?2 : r>=0.5?1 : 0; }
 function Stars({n}){ return html`<div class="stars" aria-label=${n+' כוכבים מתוך 3'}>${[0,1,2].map(i=> i<n ? html`<b key=${i}>★</b>` : html`<span key=${i}>★</span>`)}</div>`; }
 function Html({h,cls,tag}){ return React.createElement(tag||'div',{className:cls,dangerouslySetInnerHTML:{__html:h}}); }
@@ -2319,7 +2570,7 @@ function Quiz({cfg,onExit,onFinish}){
     if(q.type==='input'){
       const s=String(v).replace(/[\s,]/g,'');
       if(s===''||isNaN(Number(s))){ setFb({kind:'info',title:'כתבו מספר ואז לחצו על "בדיקה"'}); return; }
-      ok = Number(s)===q.answer; given=s;
+      ok = q.accept ? !!q.accept(Number(s)) : Number(s)===q.answer; given=s;
     } else if(q.type==='choice'){
       ok = String(v)===String(q.answer); setPicked(String(v));
     } else {
@@ -2465,6 +2716,14 @@ function Home({stats,name,go}){
         <p class="muted" style=${{fontSize:'.85rem'}}>תורגלו ${practiced} מתוך ${TOPICS.length} נושאים${weak.length? ' · כדאי לחזק: '+weak.map(p=>TOPIC[p.id].name).join(', ') : ''}</p>
       </div>
     </div>
+    ${REVIEWS().length ? html`<section class="section math">
+      <div class="section-h"><span class="dot"></span><h2>דפי חזרה מהכיתה</h2></div>
+      <div class="grid">${REVIEWS().map(r=>html`<button key=${r.id} class="tcard review-card math" onClick=${()=>go.review(r.id)}>
+        <div class="tcard-top"><h3>${r.title}</h3><span class="pill">${r.date}</span></div>
+        <p>${r.note} · ${r.items.length} שאלות</p>
+        <span class="btn primary" style=${{alignSelf:'flex-start'}}>להתחיל</span>
+      </button>`)}</div>
+    </section>` : null}
     ${['math','geo'].map(sub=>html`<section class=${'section '+sub} key=${sub}>
       <div class="section-h"><span class="dot"></span><h2>${SUBJ[sub]}</h2><span class="muted">${TOPICS.filter(t=>t.sub===sub).length} נושאים</span></div>
       <div class="grid">${TOPICS.filter(t=>t.sub===sub).map(t=>html`<${TopicCard} key=${t.id} t=${t} p=${stats.per[t.id]} onOpen=${go.topic} />`)}</div>
@@ -2619,6 +2878,7 @@ function App(){
     topic:(id)=>{ setTid(id); setView('topic'); },
     practice:(id,focus)=>startQuiz({mode:'practice',title:TOPIC[id].name,plan:practicePlan(id,stats,focus),again:{type:'practice',id,focus}}),
     smart:()=>startQuiz({mode:'smart',title:'כל הנושאים',plan:smartPlan(stats),again:{type:'smart'}}),
+    review:(id)=>{ const r=REVIEWS().find(x=>x.id===id); if(r) startQuiz({mode:'review',title:r.title+' '+r.date,plan:r.items.map(it=>({tid:it.tid,make:it.make})),again:{type:'review',id}}); },
     exam:(sub)=>startQuiz({mode:'exam',title:sub==='all'?'משולב':SUBJ[sub],plan:examPlan(sub),again:{type:'exam',sub}}),
   };
   function onFinish(items){
@@ -2626,7 +2886,7 @@ function App(){
     store.addSession({t:Date.now(),mode:cfg.mode,title:cfg.title,total:items.length,score,items});
     setRes({mode:cfg.mode,title:cfg.title,items,again:cfg.again}); setView('result');
   }
-  function again(){ const a=res.again; if(a.type==='practice') go.practice(a.id,a.focus); else if(a.type==='smart') go.smart(); else go.exam(a.sub); }
+  function again(){ const a=res.again; if(a.type==='practice') go.practice(a.id,a.focus); else if(a.type==='smart') go.smart(); else if(a.type==='review') go.review(a.id); else go.exam(a.sub); }
 
   const inParent = view==='parent';
   let body;
